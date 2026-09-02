@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Paleta herdada do StrongApp web (src/index.css) -->
+    <color name="brand_primary">#F4511F</color>
+    <color name="brand_primary_dark">#C63F14</color>
+    <color name="brand_on_primary">#FFFFFF</color>
+
+    <color name="surface_light">#FFFFFF</color>
+    <color name="background_light">#F7F7F8</color>
+    <color name="text_light">#020817</color>
+    <color name="muted_light">#6B7280</color>
+
+    <color name="surface_dark">#111827</color>
+    <color name="background_dark">#0B1120</color>
+    <color name="text_dark">#F9FAFB</color>
+    <color name="muted_dark">#9CA3AF</color>
+
+    <color name="success">#16A34A</color>
+</resources>

@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">StrongApp</string>
+    <string name="tagline">Sua Conexão com um Você Mais Forte</string>
+
+    <string name="tab_workouts">Treinos</string>
+    <string name="tab_exercises">Exercícios</string>
+    <string name="tab_profile">Perfil</string>
+
+    <string name="login_title">Entrar</string>
+    <string name="register_title">Criar conta</string>
+    <string name="email">E-mail</string>
+    <string name="password">Senha</string>
+    <string name="first_name">Nome</string>
+    <string name="last_name">Sobrenome</string>
+    <string name="enter">Entrar</string>
+    <string name="create_account">Criar conta</string>
+    <string name="no_account">Não tem conta? Cadastre-se</string>
+    <string name="have_account">Já tem conta? Entrar</string>
+    <string name="server_settings">Servidor</string>
+
+    <string name="my_workouts">Meus treinos</string>
+    <string name="new_workout">Novo treino</string>
+    <string name="empty_workouts">Você ainda não tem treinos. Toque em + para criar o primeiro.</string>
+    <string name="empty_exercises">Nenhum exercício encontrado.</string>
+    <string name="search_exercise">Buscar exercício</string>
+    <string name="all_groups">Todos</string>
+
+    <string name="timer">Cronômetro de descanso</string>
+    <string name="start">Iniciar</string>
+    <string name="pause">Pausar</string>
+    <string name="reset">Zerar</string>
+
+    <string name="save">Salvar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Excluir</string>
+    <string name="logout">Sair da conta</string>
+    <string name="label_sets">SÉRIES</string>
+    <string name="label_reps">REPS</string>
+    <string name="label_weight">CARGA</string>
+    <string name="label_rest">DESCANSO</string>
+
+    <string name="workout_title">Título do treino</string>
+    <string name="workout_description">Descrição</string>
+    <string name="workout_duration">Duração (min)</string>
+    <string name="workout_difficulty">Dificuldade</string>
+    <string name="add_exercise">Adicionar exercício</string>
+    <string name="pick_exercise">Escolha um exercício</string>
+
+    <string name="stat_workouts">Treinos</string>
+    <string name="stat_exercises">Exercícios</string>
+    <string name="stat_completion">Conclusão</string>
+
+    <string name="server_hint">Endereço da API Laravel. No emulador use 10.0.2.2; em celular físico use o IP da máquina na rede (ex.: 192.168.0.10:8000).</string>
+</resources>
