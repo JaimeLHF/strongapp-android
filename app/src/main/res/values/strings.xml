@@ -46,6 +46,12 @@
     <string name="add_exercise">Adicionar exercício</string>
     <string name="pick_exercise">Escolha um exercício</string>
 
+    <!-- Versões curtas: na montagem do treino os quatro campos dividem a mesma linha. -->
+    <string name="hint_sets">Séries</string>
+    <string name="hint_reps">Reps</string>
+    <string name="hint_weight">Kg</string>
+    <string name="hint_rest">Desc.</string>
+
     <string name="stat_workouts">Treinos</string>
     <string name="stat_exercises">Exercícios</string>
     <string name="stat_completion">Conclusão</string>

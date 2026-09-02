@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
-                android:hint="@string/label_sets">
+                android:hint="@string/hint_sets">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/setsInput"
@@ -64,7 +64,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:hint="@string/label_reps">
+                android:hint="@string/hint_reps">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/repsInput"
@@ -80,7 +80,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:hint="@string/label_weight">
+                android:hint="@string/hint_weight">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/weightInput"
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:hint="@string/label_rest">
+                android:hint="@string/hint_rest">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/restInput"
