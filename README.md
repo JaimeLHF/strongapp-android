@@ -7,6 +7,9 @@ do projeto StrongApp.
 Trabalho da disciplina de Desenvolvimento Mobile — Atividade Avaliativa 2,
 continuação do projeto entregue na Atividade Avaliativa 1.
 
+A apresentação final está em [apresentacao.html](apresentacao.html) — abra no
+navegador e navegue com as setas do teclado.
+
 O relatório técnico da entrega — escolhas de projeto, problemas enfrentados e
 limitações conhecidas — está em [RELATORIO-TECNICO.md](RELATORIO-TECNICO.md).
 
