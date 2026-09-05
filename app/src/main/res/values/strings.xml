@@ -2,6 +2,7 @@
     <string name="app_name">StrongApp</string>
     <string name="tagline">Sua Conexão com um Você Mais Forte</string>
 
+    <string name="tab_home">Início</string>
     <string name="tab_workouts">Treinos</string>
     <string name="tab_exercises">Exercícios</string>
     <string name="tab_profile">Perfil</string>
@@ -52,9 +53,80 @@
     <string name="hint_weight">Kg</string>
     <string name="hint_rest">Desc.</string>
 
-    <string name="stat_workouts">Treinos</string>
-    <string name="stat_exercises">Exercícios</string>
-    <string name="stat_completion">Conclusão</string>
+    <!-- Dashboard (tela inicial), seguindo o protótipo do trabalho -->
+    <string name="dashboard_greeting">Vamos treinar hoje!</string>
+    <string name="dashboard_greeting_named">Vamos treinar hoje, %1$s!</string>
+    <string name="dashboard_subtitle">Seus músculos estão esperando. Continue sua jornada rumo a um você mais forte.</string>
+    <string name="dashboard_numbers">Seus Números</string>
+    <string name="action_create_workout">+ Criar Novo Treino</string>
+    <string name="action_see_exercises">Ver Exercícios</string>
+
+    <string name="stat_created_workouts">Treinos Criados</string>
+    <string name="stat_created_workouts_caption">Total de treinos</string>
+    <string name="stat_unique_exercises">Exercícios Únicos</string>
+    <string name="stat_unique_exercises_caption">Na biblioteca</string>
+    <string name="stat_weekly">Progresso Semanal</string>
+    <string name="stat_weekly_caption">Desta semana</string>
+
+    <string name="toggle_theme">Alternar tema</string>
+
+    <string name="stat_completion">Média de Conclusão</string>
+    <string name="stat_streak">Sequência Atual</string>
+
+    <string name="my_profile">Meu Perfil</string>
+    <string name="edit_profile">Editar Perfil</string>
+
+    <!-- Evolução do progresso -->
+    <string name="progress_evolution">Evolução do Progresso</string>
+    <string name="period">Período</string>
+    <string name="progress_chart_title">Conclusão dos treinos por semana</string>
+    <string name="progress_chart_caption">Conclusão dos treinos · %1$d semanas</string>
+    <string name="progress_chart_empty">Ainda não há progresso registrado neste período. Marque exercícios como concluídos para o gráfico aparecer.</string>
+
+    <!-- Conquistas -->
+    <string name="achievements">Conquistas</string>
+    <string name="achievements_summary">%1$d de %2$d conquistas desbloqueadas</string>
+    <string name="unlocked">Desbloqueada</string>
+
+    <!-- Ranking da comunidade -->
+    <string name="community_ranking">Ranking da Comunidade</string>
+    <string name="ranking_metric">Métrica</string>
+    <string name="ranking_footer">🔥 Continue treinando para subir no ranking!</string>
+    <string name="you">Você</string>
+
+    <!-- Diário do treino -->
+    <string name="workout_diary">Diário do treino</string>
+    <string name="diary_new_entry">Nova anotação</string>
+    <string name="diary_edit_entry">Editar anotação</string>
+    <string name="diary_rating">Como foi o treino?</string>
+    <string name="diary_notes">Anotações</string>
+    <string name="diary_notes_required">Escreva alguma coisa antes de salvar.</string>
+    <string name="empty_diary">Nenhuma anotação neste treino ainda. Toque em + para escrever a primeira.</string>
+
+    <!-- Compartilhar treino -->
+    <string name="share_workout">Compartilhar treino</string>
+    <string name="share_text">Olha o meu treino \"%1$s\" no StrongApp: %2$s</string>
+    <string name="share_failed">Não foi possível gerar o link de compartilhamento.</string>
+
+    <!-- Exportar dados -->
+    <string name="export_data">Exportar Dados</string>
+    <string name="export_intro">Exporte seu histórico de treinos, progresso e anotações do diário.</string>
+    <string name="export_report_title">Relatório Completo</string>
+    <string name="export_report_hint">Relatório detalhado com todos os treinos, exercícios e anotações.</string>
+    <string name="export_report_action">Exportar Relatório</string>
+    <string name="export_csv_title">Planilha de Dados</string>
+    <string name="export_csv_hint">Seus treinos em formato CSV, para abrir no Excel ou no Google Sheets.</string>
+    <string name="export_csv_action">Exportar CSV</string>
+    <string name="export_summary">%1$d treinos · %2$d anotações · %3$d registros de progresso</string>
+    <string name="export_subject">Relatório de treinos — Ritmo Forte Gym</string>
+    <string name="export_not_ready">Os dados ainda estão carregando.</string>
+    <string name="export_failed">Não foi possível gerar o arquivo.</string>
+
+    <!-- Editar treino -->
+    <string name="edit">Editar</string>
+    <string name="edit_workout">Editar treino</string>
+    <string name="workout_created">Treino criado.</string>
+    <string name="workout_updated">Treino atualizado.</string>
 
     <string name="server_hint">Endereço da API Laravel. No emulador use 10.0.2.2; em celular físico use o IP da máquina na rede (ex.: 192.168.0.10:8000).</string>
 </resources>

@@ -1,5 +1,6 @@
 package br.com.strongapp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -7,14 +8,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import br.com.strongapp.R;
 import br.com.strongapp.data.ApiClient;
+import br.com.strongapp.data.SessionManager;
 import br.com.strongapp.databinding.ActivityWorkoutDetailBinding;
 import br.com.strongapp.model.CheckRequest;
 import br.com.strongapp.model.ExerciseCheck;
 import br.com.strongapp.model.ExerciseGroup;
 import br.com.strongapp.model.Workout;
 import br.com.strongapp.model.WorkoutExercise;
+import br.com.strongapp.model.ShareRequest;
 import br.com.strongapp.model.WorkoutProgress;
+import br.com.strongapp.model.WorkoutShare;
 import br.com.strongapp.util.IsoWeek;
 
 import java.util.ArrayList;
@@ -58,6 +63,28 @@ public class WorkoutDetailActivity extends AppCompatActivity implements WorkoutE
         String title = getIntent().getStringExtra(EXTRA_TITLE);
 
         binding.toolbar.setTitle(title == null ? "" : title);
+        binding.toolbar.inflateMenu(R.menu.workout_detail);
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.action_diary) {
+                Intent diary = new Intent(this, DiaryActivity.class);
+                diary.putExtra(DiaryActivity.EXTRA_ID, workoutId);
+                diary.putExtra(DiaryActivity.EXTRA_TITLE, binding.toolbar.getTitle());
+                startActivity(diary);
+                return true;
+            }
+            if (id == R.id.action_share) {
+                shareWorkout();
+                return true;
+            }
+            if (id == R.id.action_edit) {
+                Intent edit = new Intent(this, CreateWorkoutActivity.class);
+                edit.putExtra(CreateWorkoutActivity.EXTRA_ID, workoutId);
+                startActivity(edit);
+                return true;
+            }
+            return false;
+        });
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
         adapter = new WorkoutExerciseAdapter(this);
@@ -216,6 +243,36 @@ public class WorkoutDetailActivity extends AppCompatActivity implements WorkoutE
                     @Override
                     public void onFailure(@NonNull Call<WorkoutProgress> call, @NonNull Throwable t) {
                         // Sem rede o progresso é recalculado na próxima abertura da tela.
+                    }
+                });
+    }
+
+    /**
+     * Gera o link público do treino (POST /workout-shares) e entrega pelo
+     * compartilhamento do Android — o mesmo /share/{token} que a versão web abre.
+     */
+    private void shareWorkout() {
+        String title = binding.toolbar.getTitle() == null ? "" : binding.toolbar.getTitle().toString();
+        ApiClient.api(this).shareWorkout(new ShareRequest(workoutId, title))
+                .enqueue(new Callback<WorkoutShare>() {
+                    @Override
+                    public void onResponse(@NonNull Call<WorkoutShare> call, @NonNull Response<WorkoutShare> response) {
+                        if (!response.isSuccessful() || response.body() == null
+                                || response.body().shareToken == null) {
+                            toast(getString(R.string.share_failed));
+                            return;
+                        }
+                        String link = SessionManager.get(WorkoutDetailActivity.this).getShareUrl()
+                                + response.body().shareToken;
+                        Intent intent = new Intent(Intent.ACTION_SEND)
+                                .setType("text/plain")
+                                .putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text, title, link));
+                        startActivity(Intent.createChooser(intent, getString(R.string.share_workout)));
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<WorkoutShare> call, @NonNull Throwable t) {
+                        toast(ApiClient.failureMessage(t));
                     }
                 });
     }

@@ -11,6 +11,7 @@ public class SessionManager {
     private static final String KEY_NAME = "user_name";
     private static final String KEY_EMAIL = "user_email";
     private static final String KEY_BASE_URL = "base_url";
+    private static final String KEY_DARK = "dark_mode";
 
     private static SessionManager instance;
 
@@ -51,6 +52,15 @@ public class SessionManager {
                 .apply();
     }
 
+    /** Tema escuro é o padrão porque o protótipo do trabalho é escuro. */
+    public boolean isDarkMode() {
+        return prefs.getBoolean(KEY_DARK, true);
+    }
+
+    public void setDarkMode(boolean dark) {
+        prefs.edit().putBoolean(KEY_DARK, dark).apply();
+    }
+
     public String getName() {
         return prefs.getString(KEY_NAME, "");
     }
@@ -61,6 +71,15 @@ public class SessionManager {
 
     public String getBaseUrl() {
         return prefs.getString(KEY_BASE_URL, ApiConfig.DEFAULT_BASE_URL);
+    }
+
+    /**
+     * Endereço público das telas web, derivado da API: "http://host:8000/api/"
+     * vira "http://host:8000/share/". É o link que o app compartilha.
+     */
+    public String getShareUrl() {
+        String base = getBaseUrl();
+        return base.endsWith("api/") ? base.substring(0, base.length() - 4) + "share/" : base + "share/";
     }
 
     /** Normaliza para terminar em "/api/", que é o que o Retrofit espera. */

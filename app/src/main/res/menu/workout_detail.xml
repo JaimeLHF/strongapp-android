@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_diary"
+        android:title="@string/workout_diary"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/share_workout"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_edit"
+        android:title="@string/edit_workout"
+        app:showAsAction="never" />
+</menu>

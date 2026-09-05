@@ -7,8 +7,9 @@ import androidx.fragment.app.Fragment;
 
 import br.com.strongapp.R;
 import br.com.strongapp.databinding.ActivityMainBinding;
+import br.com.strongapp.util.ThemeMode;
 
-/** Casca do app: navegação inferior entre Treinos, Exercícios e Perfil. */
+/** Casca do app: navegação inferior entre Início, Treinos, Exercícios e Perfil. */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -19,9 +20,13 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.themeButton.setOnClickListener(v -> ThemeMode.toggle(this));
+
         binding.bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_workouts) {
+            if (id == R.id.nav_home) {
+                return show(new DashboardFragment());
+            } else if (id == R.id.nav_workouts) {
                 return show(new WorkoutsFragment());
             } else if (id == R.id.nav_exercises) {
                 return show(new ExercisesFragment());
@@ -32,8 +37,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (savedInstanceState == null) {
-            binding.bottomNav.setSelectedItemId(R.id.nav_workouts);
+            binding.bottomNav.setSelectedItemId(R.id.nav_home);
         }
+    }
+
+    /** Permite que um fragmento troque de aba (usado pelos atalhos do dashboard). */
+    public void selectTab(int itemId) {
+        binding.bottomNav.setSelectedItemId(itemId);
     }
 
     private boolean show(Fragment fragment) {

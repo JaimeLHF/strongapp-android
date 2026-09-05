@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".StrongApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -40,6 +41,36 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.AchievementsActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.RankingActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.DiaryActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.WorkoutDetailActivity" />
+
+        <activity
+            android:name=".ui.ExportActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.exports"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

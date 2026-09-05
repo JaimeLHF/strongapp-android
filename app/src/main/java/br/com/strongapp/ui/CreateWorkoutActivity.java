@@ -17,6 +17,7 @@ import br.com.strongapp.model.CreateWorkoutRequest;
 import br.com.strongapp.model.Exercise;
 import br.com.strongapp.model.ExerciseInput;
 import br.com.strongapp.model.Workout;
+import br.com.strongapp.model.WorkoutExercise;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +26,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/** Montagem de um treino novo com séries, repetições, carga e descanso (RF06). */
+/**
+ * Montagem de um treino com séries, repetições, carga e descanso (RF06).
+ * Com {@link #EXTRA_ID} no intent a mesma tela edita um treino existente.
+ */
 public class CreateWorkoutActivity extends AppCompatActivity implements PickedExerciseAdapter.Listener {
+
+    /** Id do treino a editar. Ausente significa criar um treino novo. */
+    public static final String EXTRA_ID = "workout_id";
 
     private static final String[] DIFFICULTIES = {"Iniciante", "Intermediário", "Avançado"};
 
     private ActivityCreateWorkoutBinding binding;
     private PickedExerciseAdapter adapter;
+    private String editingId;
 
     private final List<PickedExercise> picked = new ArrayList<>();
     private final List<Exercise> catalog = new ArrayList<>();
@@ -41,6 +49,11 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
         super.onCreate(savedInstanceState);
         binding = ActivityCreateWorkoutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        editingId = getIntent().getStringExtra(EXTRA_ID);
+        if (editingId != null) {
+            binding.toolbar.setTitle(R.string.edit_workout);
+        }
 
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         binding.difficultyInput.setSimpleItems(DIFFICULTIES);
@@ -54,6 +67,48 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
 
         updatePickedLabel();
         loadCatalog();
+
+        if (editingId != null) {
+            loadWorkout();
+        }
+    }
+
+    /** Preenche o formulário com o treino salvo, para edição. */
+    private void loadWorkout() {
+        ApiClient.api(this).workout(editingId).enqueue(new Callback<Workout>() {
+            @Override
+            public void onResponse(@NonNull Call<Workout> call, @NonNull Response<Workout> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    toast(ApiClient.errorMessage(response));
+                    return;
+                }
+                Workout workout = response.body();
+                binding.titleInput.setText(workout.title);
+                binding.descriptionInput.setText(workout.description);
+                binding.durationInput.setText(workout.duration == null ? "" : String.valueOf(workout.duration));
+                binding.difficultyInput.setText(workout.difficulty == null ? "" : workout.difficulty, false);
+
+                picked.clear();
+                if (workout.workoutExercises != null) {
+                    for (WorkoutExercise item : workout.workoutExercises) {
+                        if (item.exercise == null) continue;
+                        PickedExercise entry = new PickedExercise(item.exercise);
+                        entry.sets = item.sets;
+                        entry.reps = item.reps;
+                        entry.weight = item.weight;
+                        entry.restTime = item.restTime;
+                        picked.add(entry);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                updatePickedLabel();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Workout> call, @NonNull Throwable t) {
+                toast(ApiClient.failureMessage(t));
+            }
+        });
     }
 
     private void loadCatalog() {
@@ -146,12 +201,16 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
         }
 
         binding.saveButton.setEnabled(false);
-        ApiClient.api(this).createWorkout(body).enqueue(new Callback<Workout>() {
+        Call<Workout> call = editingId == null
+                ? ApiClient.api(this).createWorkout(body)
+                : ApiClient.api(this).updateWorkout(editingId, body);
+
+        call.enqueue(new Callback<Workout>() {
             @Override
             public void onResponse(@NonNull Call<Workout> call, @NonNull Response<Workout> response) {
                 binding.saveButton.setEnabled(true);
                 if (response.isSuccessful()) {
-                    toast("Treino criado.");
+                    toast(getString(editingId == null ? R.string.workout_created : R.string.workout_updated));
                     finish();
                 } else {
                     toast(ApiClient.errorMessage(response));

@@ -43,6 +43,10 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.saveButton.setOnClickListener(v -> save());
+        binding.achievementsButton.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), AchievementsActivity.class)));
+        binding.exportButton.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), ExportActivity.class)));
         binding.logoutButton.setOnClickListener(v -> logout());
 
         loadProfile();
@@ -59,6 +63,11 @@ public class ProfileFragment extends Fragment {
                     binding.firstNameInput.setText(user.firstName == null ? "" : user.firstName);
                     binding.lastNameInput.setText(user.lastName == null ? "" : user.lastName);
                     binding.emailLabel.setText(user.email == null ? "" : user.email);
+
+                    String full = ((user.firstName == null ? "" : user.firstName) + " "
+                            + (user.lastName == null ? "" : user.lastName)).trim();
+                    binding.nameLabel.setText(full.isEmpty() ? user.email : full);
+                    binding.initialsLabel.setText(initials(full, user.email));
                 } else {
                     Toast.makeText(requireContext(), ApiClient.errorMessage(response), Toast.LENGTH_LONG).show();
                 }
@@ -82,6 +91,7 @@ public class ProfileFragment extends Fragment {
                 binding.statExercises.setText(String.valueOf(stats.uniqueExercises));
                 binding.statCompletion.setText(
                         String.format(Locale.getDefault(), "%.0f%%", stats.avgCompletion));
+                binding.statStreak.setText(String.valueOf(stats.currentStreak));
             }
 
             @Override
@@ -141,6 +151,20 @@ public class ProfileFragment extends Fragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();
+    }
+
+    /** Iniciais do nome; sem nome, a primeira letra do e-mail. */
+    private static String initials(String fullName, String email) {
+        StringBuilder builder = new StringBuilder();
+        for (String part : fullName.split("\\s+")) {
+            if (!part.isEmpty() && builder.length() < 2) {
+                builder.append(Character.toUpperCase(part.charAt(0)));
+            }
+        }
+        if (builder.length() == 0 && email != null && !email.isEmpty()) {
+            builder.append(Character.toUpperCase(email.charAt(0)));
+        }
+        return builder.toString();
     }
 
     private static String text(CharSequence value) {
