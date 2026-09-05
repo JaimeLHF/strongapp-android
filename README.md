@@ -7,6 +7,9 @@ do projeto StrongApp.
 Trabalho da disciplina de Desenvolvimento Mobile — Atividade Avaliativa 2,
 continuação do projeto entregue na Atividade Avaliativa 1.
 
+O relatório técnico da entrega — escolhas de projeto, problemas enfrentados e
+limitações conhecidas — está em [RELATORIO-TECNICO.md](RELATORIO-TECNICO.md).
+
 ## Requisitos funcionais
 
 Os quinze requisitos são os do enunciado da Atividade Avaliativa 1. Todos atendidos.
