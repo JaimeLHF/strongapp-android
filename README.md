@@ -7,18 +7,31 @@ do projeto StrongApp.
 Trabalho da disciplina de Desenvolvimento Mobile — Atividade Avaliativa 2,
 continuação do projeto entregue na Atividade Avaliativa 1.
 
-## Requisitos implementados
+## Requisitos funcionais
 
-| Código | Requisito | Onde |
-|---|---|---|
-| RF01 | Cadastro de usuário | `ui/LoginActivity.java` |
-| RF02 | Autenticação com sessão mantida entre acessos | `ui/LoginActivity.java`, `data/SessionManager.java` |
-| RF03 | Catálogo de exercícios | `ui/ExercisesFragment.java` |
-| RF05 | Busca por texto e filtro por grupo muscular | `ui/ExercisesFragment.java` |
-| RF06 | Montagem de treino com séries, repetições, carga e descanso | `ui/CreateWorkoutActivity.java` |
-| RF08 | Progresso semanal calculado por semana ISO | `ui/WorkoutDetailActivity.java`, `util/IsoWeek.java` |
-| RF09 | Cronômetro de descanso em botão flutuante | `ui/TimerBottomSheet.java` |
-| RF12 | Perfil com estatísticas e edição de nome | `ui/ProfileFragment.java` |
+Os quinze requisitos são os do enunciado da Atividade Avaliativa 1.
+
+| Código | Requisito | Situação | Onde |
+|---|---|---|---|
+| RF01 | Cadastro de usuário | Atendido | `ui/LoginActivity.java` |
+| RF02 | Autenticação com sessão mantida entre acessos | Atendido | `ui/LoginActivity.java`, `data/SessionManager.java` |
+| RF03 | Catálogo de exercícios | Atendido | `ui/ExercisesFragment.java` |
+| RF04 | Gestão do catálogo: criar, editar e excluir exercícios | **Não atendido** | — |
+| RF05 | Busca por texto e filtro por grupo muscular | Atendido | `ui/ExercisesFragment.java` |
+| RF06 | Montagem de treino com séries, repetições, carga e descanso | Atendido | `ui/CreateWorkoutActivity.java` |
+| RF07 | Supersets | **Parcial** — os grupos vindos da API são exibidos, mas não há como criá-los no app | `ui/WorkoutDetailActivity.java` |
+| RF08 | Progresso semanal por semana ISO | Atendido | `ui/WorkoutDetailActivity.java`, `util/IsoWeek.java` |
+| RF09 | Cronômetro de descanso em botão flutuante | Atendido | `ui/TimerBottomSheet.java` |
+| RF10 | Histórico e evolução em gráfico | Atendido | `ui/DashboardFragment.java`, `ui/LineChartView.java` |
+| RF11 | Conquistas com barra de progresso | Atendido | `ui/AchievementsActivity.java`, `ui/Achievement.java` |
+| RF12 | Perfil com nome, sobrenome, e-mail e data de cadastro | **Parcial** — falta exibir a data de cadastro | `ui/ProfileFragment.java` |
+| RF13 | Compartilhamento de progresso em imagem 9:16 | **Parcial** — compartilha o link público do treino, não a imagem | `ui/WorkoutDetailActivity.java` |
+| RF14 | Tema claro e escuro preservando a escolha | Atendido | `util/ThemeMode.java`, `res/values-night/` |
+| RF15 | Notificação de lembrete nos dias de treino | **Não atendido** | — |
+
+Fora do enunciado, o app também traz o diário do treino
+(`ui/DiaryActivity.java`) e a exportação de dados (`ui/ExportActivity.java`),
+que existem na versão web.
 
 ## Telas do aplicativo
 
