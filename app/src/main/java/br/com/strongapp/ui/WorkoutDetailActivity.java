@@ -1,8 +1,19 @@
 package br.com.strongapp.ui;
 
+import android.Manifest;
+import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.widget.CheckBox;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +23,7 @@ import br.com.strongapp.R;
 import br.com.strongapp.data.ApiClient;
 import br.com.strongapp.data.SessionManager;
 import br.com.strongapp.databinding.ActivityWorkoutDetailBinding;
+import br.com.strongapp.databinding.DialogReminderBinding;
 import br.com.strongapp.model.CheckRequest;
 import br.com.strongapp.model.ExerciseCheck;
 import br.com.strongapp.model.ExerciseGroup;
@@ -21,6 +33,13 @@ import br.com.strongapp.model.ShareRequest;
 import br.com.strongapp.model.WorkoutProgress;
 import br.com.strongapp.model.WorkoutShare;
 import br.com.strongapp.util.IsoWeek;
+import br.com.strongapp.util.ProgressImage;
+import br.com.strongapp.util.Reminders;
+
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +90,14 @@ public class WorkoutDetailActivity extends AppCompatActivity implements WorkoutE
                 diary.putExtra(DiaryActivity.EXTRA_ID, workoutId);
                 diary.putExtra(DiaryActivity.EXTRA_TITLE, binding.toolbar.getTitle());
                 startActivity(diary);
+                return true;
+            }
+            if (id == R.id.action_reminder) {
+                showReminderDialog();
+                return true;
+            }
+            if (id == R.id.action_share_progress) {
+                shareProgressImage();
                 return true;
             }
             if (id == R.id.action_share) {
@@ -245,6 +272,93 @@ public class WorkoutDetailActivity extends AppCompatActivity implements WorkoutE
                         // Sem rede o progresso é recalculado na próxima abertura da tela.
                     }
                 });
+    }
+
+    /**
+     * Escolha dos dias e do horário do lembrete deste treino (RF15).
+     * Desmarcar todos os dias desliga o lembrete.
+     */
+    private void showReminderDialog() {
+        DialogReminderBinding dialog = DialogReminderBinding.inflate(getLayoutInflater());
+        CheckBox[] boxes = {dialog.day1, dialog.day2, dialog.day3, dialog.day4,
+                dialog.day5, dialog.day6, dialog.day7};
+
+        Set<Integer> saved = Reminders.days(this, workoutId);
+        for (int i = 0; i < boxes.length; i++) {
+            boxes[i].setChecked(saved.contains(i + 1));
+        }
+
+        final int[] time = {Reminders.hour(this, workoutId), Reminders.minute(this, workoutId)};
+        dialog.timeButton.setText(getString(R.string.reminder_time, time[0], time[1]));
+        dialog.timeButton.setOnClickListener(v ->
+                new TimePickerDialog(this, (view, hour, minute) -> {
+                    time[0] = hour;
+                    time[1] = minute;
+                    dialog.timeButton.setText(getString(R.string.reminder_time, hour, minute));
+                }, time[0], time[1], true).show());
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.reminder)
+                .setView(dialog.getRoot())
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.save, (d, which) -> {
+                    Set<Integer> days = new HashSet<>();
+                    for (int i = 0; i < boxes.length; i++) {
+                        if (boxes[i].isChecked()) {
+                            days.add(i + 1);
+                        }
+                    }
+
+                    String title = binding.toolbar.getTitle() == null
+                            ? "" : binding.toolbar.getTitle().toString();
+                    Reminders.save(this, workoutId, title, days, time[0], time[1]);
+
+                    if (days.isEmpty()) {
+                        toast(getString(R.string.reminder_cleared));
+                    } else {
+                        askNotificationPermission();
+                        toast(getString(R.string.reminder_saved, Reminders.summary(this, workoutId)));
+                    }
+                })
+                .show();
+    }
+
+    /** No Android 13+ a notificação só aparece com permissão do usuário. */
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        toast(getString(R.string.reminder_permission_needed));
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+    }
+
+    /** Gera a imagem 9:16 do progresso da semana e entrega pelo menu do aparelho (RF13). */
+    private void shareProgressImage() {
+        int total = exercises.size();
+        int done = 0;
+        for (WorkoutExercise item : exercises) {
+            if (item.exerciseId != null && checkedIds.contains(item.exerciseId)) {
+                done++;
+            }
+        }
+        int percentage = total == 0 ? 0 : Math.round(done * 100f / total);
+        String title = binding.toolbar.getTitle() == null ? "" : binding.toolbar.getTitle().toString();
+
+        try {
+            File file = ProgressImage.create(this, title, done, total, week.week());
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".exports", file);
+            Intent intent = new Intent(Intent.ACTION_SEND)
+                    .setType("image/png")
+                    .putExtra(Intent.EXTRA_STREAM, uri)
+                    .putExtra(Intent.EXTRA_TEXT, getString(R.string.share_progress_text, percentage, title))
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, getString(R.string.share_progress)));
+        } catch (IOException e) {
+            toast(getString(R.string.share_progress_failed));
+        }
     }
 
     /**

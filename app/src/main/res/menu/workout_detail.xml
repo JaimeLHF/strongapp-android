@@ -6,6 +6,14 @@
         android:title="@string/workout_diary"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_reminder"
+        android:title="@string/reminder"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_share_progress"
+        android:title="@string/share_progress"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_share"
         android:title="@string/share_workout"
         app:showAsAction="never" />

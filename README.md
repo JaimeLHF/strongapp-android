@@ -9,25 +9,25 @@ continuação do projeto entregue na Atividade Avaliativa 1.
 
 ## Requisitos funcionais
 
-Os quinze requisitos são os do enunciado da Atividade Avaliativa 1.
+Os quinze requisitos são os do enunciado da Atividade Avaliativa 1. Todos atendidos.
 
 | Código | Requisito | Situação | Onde |
 |---|---|---|---|
 | RF01 | Cadastro de usuário | Atendido | `ui/LoginActivity.java` |
 | RF02 | Autenticação com sessão mantida entre acessos | Atendido | `ui/LoginActivity.java`, `data/SessionManager.java` |
 | RF03 | Catálogo de exercícios | Atendido | `ui/ExercisesFragment.java` |
-| RF04 | Gestão do catálogo: criar, editar e excluir exercícios | **Não atendido** | — |
+| RF04 | Gestão do catálogo: criar, editar e excluir exercícios | Atendido | `ui/ExercisesFragment.java` |
 | RF05 | Busca por texto e filtro por grupo muscular | Atendido | `ui/ExercisesFragment.java` |
 | RF06 | Montagem de treino com séries, repetições, carga e descanso | Atendido | `ui/CreateWorkoutActivity.java` |
-| RF07 | Supersets | **Parcial** — os grupos vindos da API são exibidos, mas não há como criá-los no app | `ui/WorkoutDetailActivity.java` |
+| RF07 | Supersets | Atendido | `ui/CreateWorkoutActivity.java`, `ui/WorkoutDetailActivity.java` |
 | RF08 | Progresso semanal por semana ISO | Atendido | `ui/WorkoutDetailActivity.java`, `util/IsoWeek.java` |
 | RF09 | Cronômetro de descanso em botão flutuante | Atendido | `ui/TimerBottomSheet.java` |
 | RF10 | Histórico e evolução em gráfico | Atendido | `ui/DashboardFragment.java`, `ui/LineChartView.java` |
 | RF11 | Conquistas com barra de progresso | Atendido | `ui/AchievementsActivity.java`, `ui/Achievement.java` |
-| RF12 | Perfil com nome, sobrenome, e-mail e data de cadastro | **Parcial** — falta exibir a data de cadastro | `ui/ProfileFragment.java` |
-| RF13 | Compartilhamento de progresso em imagem 9:16 | **Parcial** — compartilha o link público do treino, não a imagem | `ui/WorkoutDetailActivity.java` |
+| RF12 | Perfil com nome, sobrenome, e-mail e data de cadastro | Atendido | `ui/ProfileFragment.java` |
+| RF13 | Compartilhamento de progresso em imagem 9:16 | Atendido | `util/ProgressImage.java`, `ui/WorkoutDetailActivity.java` |
 | RF14 | Tema claro e escuro preservando a escolha | Atendido | `util/ThemeMode.java`, `res/values-night/` |
-| RF15 | Notificação de lembrete nos dias de treino | **Não atendido** | — |
+| RF15 | Notificação de lembrete nos dias de treino | Atendido | `util/Reminders.java`, `util/ReminderReceiver.java` |
 
 Fora do enunciado, o app também traz o diário do treino
 (`ui/DiaryActivity.java`) e a exportação de dados (`ui/ExportActivity.java`),
@@ -87,7 +87,7 @@ app/src/main/java/br/com/strongapp/
 ├── data/     Retrofit, interceptor de token, sessão
 ├── model/    Objetos de transferência da API
 ├── ui/       Activities, Fragments, Adapters e o gráfico em Canvas
-└── util/     Semana ISO-8601 e tema claro/escuro
+└── util/     Semana ISO-8601, tema, lembretes e a imagem de progresso
 ```
 
 ## Tecnologias
@@ -97,5 +97,6 @@ app/src/main/java/br/com/strongapp/
 - OkHttp com interceptor que injeta o token Bearer do Laravel Sanctum
 - Material Design 3, ViewBinding, RecyclerView
 - Gráfico de progresso desenhado em `Canvas` numa View própria, sem biblioteca
-- FileProvider para entregar o relatório e o CSV pelo compartilhamento do Android
+- FileProvider para entregar relatório, CSV e a imagem de progresso pelo compartilhamento
+- AlarmManager e notificação local para os lembretes nos dias de treino
 - Tema escuro por padrão, seguindo o protótipo, com alternância na barra superior

@@ -3,6 +3,7 @@ package br.com.strongapp.ui;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
@@ -56,6 +57,12 @@ public class PickedExerciseAdapter extends RecyclerView.Adapter<PickedExerciseAd
 
         void bind(PickedExercise picked) {
             binding.name.setText(picked.exercise.name);
+
+            boolean grouped = picked.groupName != null && !picked.groupName.isEmpty();
+            binding.groupLabel.setVisibility(grouped ? View.VISIBLE : View.GONE);
+            if (grouped) {
+                binding.groupLabel.setText(picked.groupName);
+            }
 
             // Solta os observadores da linha anterior antes de reescrever os campos,
             // senão o RecyclerView grava os valores reciclados no exercício errado.

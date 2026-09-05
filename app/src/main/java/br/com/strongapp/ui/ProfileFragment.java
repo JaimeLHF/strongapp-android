@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import br.com.strongapp.R;
 import br.com.strongapp.data.ApiClient;
 import br.com.strongapp.data.SessionManager;
 import br.com.strongapp.databinding.FragmentProfileBinding;
@@ -68,6 +69,8 @@ public class ProfileFragment extends Fragment {
                             + (user.lastName == null ? "" : user.lastName)).trim();
                     binding.nameLabel.setText(full.isEmpty() ? user.email : full);
                     binding.initialsLabel.setText(initials(full, user.email));
+                    binding.memberSinceLabel.setText(
+                            getString(R.string.member_since, DiaryAdapter.date(user.createdAt)));
                 } else {
                     Toast.makeText(requireContext(), ApiClient.errorMessage(response), Toast.LENGTH_LONG).show();
                 }

@@ -64,6 +64,15 @@ public interface StrongApi {
     @GET("exercises")
     Call<List<Exercise>> exercises();
 
+    @POST("exercises")
+    Call<Exercise> createExercise(@Body Exercise body);
+
+    @PUT("exercises/{id}")
+    Call<Exercise> updateExercise(@Path("id") String id, @Body Exercise body);
+
+    @DELETE("exercises/{id}")
+    Call<ApiMessage> deleteExercise(@Path("id") String id);
+
     @GET("workouts")
     Call<List<Workout>> workouts();
 

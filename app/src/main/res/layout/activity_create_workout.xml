@@ -109,6 +109,14 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/add_exercise" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/supersetButton"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/superset_action" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/pickedList"
                 android:layout_width="match_parent"

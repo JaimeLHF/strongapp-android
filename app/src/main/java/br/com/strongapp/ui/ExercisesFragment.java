@@ -14,10 +14,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import br.com.strongapp.R;
 import br.com.strongapp.data.ApiClient;
+import br.com.strongapp.databinding.DialogExerciseBinding;
 import br.com.strongapp.databinding.FragmentExercisesBinding;
+import br.com.strongapp.model.ApiMessage;
 import br.com.strongapp.model.Exercise;
 
 import java.util.ArrayList;
@@ -29,8 +32,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/** Catálogo de exercícios com busca por texto e filtro por grupo muscular (RF03 e RF05). */
-public class ExercisesFragment extends Fragment {
+/**
+ * Catálogo de exercícios com busca e filtro por grupo muscular (RF03 e RF05) e
+ * gestão do catálogo — criar, editar e excluir (RF04). O toque longo em um
+ * exercício abre editar/excluir; o botão flutuante cria um novo.
+ */
+public class ExercisesFragment extends Fragment implements ExerciseAdapter.Listener {
 
     private FragmentExercisesBinding binding;
     private ExerciseAdapter adapter;
@@ -50,8 +57,11 @@ public class ExercisesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         adapter = new ExerciseAdapter();
+        adapter.setListener(this);
         binding.list.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.list.setAdapter(adapter);
+
+        binding.addButton.setOnClickListener(v -> showEditor(null));
 
         binding.swipe.setOnRefreshListener(this::load);
         binding.searchInput.addTextChangedListener(new TextWatcher() {
@@ -144,6 +154,118 @@ public class ExercisesFragment extends Fragment {
 
         adapter.submit(filtered);
         binding.emptyState.setVisibility(filtered.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    /** {@code exercise} nulo cria; preenchido edita. */
+    private void showEditor(@Nullable Exercise exercise) {
+        DialogExerciseBinding dialog = DialogExerciseBinding.inflate(getLayoutInflater());
+        if (exercise != null) {
+            dialog.nameInput.setText(exercise.name);
+            dialog.muscleGroupInput.setText(exercise.muscleGroup);
+            dialog.equipmentInput.setText(exercise.equipment);
+            dialog.instructionsInput.setText(exercise.instructions);
+            dialog.videoInput.setText(exercise.videoUrl);
+        }
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(exercise == null ? R.string.new_exercise : R.string.edit_exercise)
+                .setView(dialog.getRoot())
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.save, (d, which) -> {
+                    Exercise body = new Exercise();
+                    body.name = text(dialog.nameInput.getText());
+                    if (body.name.isEmpty()) {
+                        toast(getString(R.string.exercise_name_required));
+                        return;
+                    }
+                    body.muscleGroup = emptyToNull(text(dialog.muscleGroupInput.getText()));
+                    body.equipment = emptyToNull(text(dialog.equipmentInput.getText()));
+                    body.instructions = emptyToNull(text(dialog.instructionsInput.getText()));
+                    body.videoUrl = emptyToNull(text(dialog.videoInput.getText()));
+                    save(exercise, body);
+                })
+                .show();
+    }
+
+    private void save(@Nullable Exercise existing, Exercise body) {
+        Call<Exercise> call = existing == null
+                ? ApiClient.api(requireContext()).createExercise(body)
+                : ApiClient.api(requireContext()).updateExercise(existing.id, body);
+
+        call.enqueue(new Callback<Exercise>() {
+            @Override
+            public void onResponse(@NonNull Call<Exercise> call, @NonNull Response<Exercise> response) {
+                if (binding == null) return;
+                if (response.isSuccessful()) {
+                    load();
+                } else {
+                    toast(ApiClient.errorMessage(response));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Exercise> call, @NonNull Throwable t) {
+                if (binding == null) return;
+                toast(ApiClient.failureMessage(t));
+            }
+        });
+    }
+
+    @Override
+    public void onExerciseLongPress(Exercise exercise) {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(exercise.name)
+                .setItems(new String[]{getString(R.string.edit), getString(R.string.delete)},
+                        (dialog, which) -> {
+                            if (which == 0) {
+                                showEditor(exercise);
+                            } else {
+                                confirmDelete(exercise);
+                            }
+                        })
+                .show();
+    }
+
+    private void confirmDelete(Exercise exercise) {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(exercise.name)
+                .setMessage(R.string.delete_exercise_confirm)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.delete, (dialog, which) -> delete(exercise))
+                .show();
+    }
+
+    private void delete(Exercise exercise) {
+        ApiClient.api(requireContext()).deleteExercise(exercise.id).enqueue(new Callback<ApiMessage>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiMessage> call, @NonNull Response<ApiMessage> response) {
+                if (binding == null) return;
+                if (response.isSuccessful()) {
+                    toast(getString(R.string.exercise_deleted));
+                    load();
+                } else {
+                    toast(ApiClient.errorMessage(response));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiMessage> call, @NonNull Throwable t) {
+                if (binding == null) return;
+                toast(ApiClient.failureMessage(t));
+            }
+        });
+    }
+
+    private static String emptyToNull(String value) {
+        return value.isEmpty() ? null : value;
+    }
+
+    private static String text(CharSequence value) {
+        return value == null ? "" : value.toString().trim();
+    }
+
+    private void toast(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override

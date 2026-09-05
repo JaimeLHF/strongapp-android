@@ -9,6 +9,8 @@ public class PickedExercise {
     public Integer reps = 12;
     public Double weight = null;
     public Integer restTime = 60;
+    /** Nome do superset a que este exercício pertence; nulo quando está solto. */
+    public String groupName = null;
 
     public PickedExercise(Exercise exercise) {
         this.exercise = exercise;

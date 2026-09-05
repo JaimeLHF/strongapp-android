@@ -16,11 +16,16 @@ import br.com.strongapp.databinding.ActivityCreateWorkoutBinding;
 import br.com.strongapp.model.CreateWorkoutRequest;
 import br.com.strongapp.model.Exercise;
 import br.com.strongapp.model.ExerciseInput;
+import br.com.strongapp.model.GroupInput;
 import br.com.strongapp.model.Workout;
 import br.com.strongapp.model.WorkoutExercise;
 
+import android.widget.EditText;
+
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,6 +68,7 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
         binding.pickedList.setAdapter(adapter);
 
         binding.addExerciseButton.setOnClickListener(v -> showPicker());
+        binding.supersetButton.setOnClickListener(v -> showSupersetPicker());
         binding.saveButton.setOnClickListener(v -> save());
 
         updatePickedLabel();
@@ -88,6 +94,15 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
                 binding.durationInput.setText(workout.duration == null ? "" : String.valueOf(workout.duration));
                 binding.difficultyInput.setText(workout.difficulty == null ? "" : workout.difficulty, false);
 
+                Map<String, String> groupNames = new LinkedHashMap<>();
+                if (workout.exerciseGroups != null) {
+                    for (br.com.strongapp.model.ExerciseGroup group : workout.exerciseGroups) {
+                        if (group.id != null) {
+                            groupNames.put(group.id, group.name);
+                        }
+                    }
+                }
+
                 picked.clear();
                 if (workout.workoutExercises != null) {
                     for (WorkoutExercise item : workout.workoutExercises) {
@@ -97,6 +112,7 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
                         entry.reps = item.reps;
                         entry.weight = item.weight;
                         entry.restTime = item.restTime;
+                        entry.groupName = item.groupId == null ? null : groupNames.get(item.groupId);
                         picked.add(entry);
                     }
                 }
@@ -156,6 +172,80 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
                 .show();
     }
 
+    /**
+     * Agrupa dois ou mais exercícios já adicionados em um superset (RF07).
+     * O botão neutro desfaz todos os agrupamentos do treino.
+     */
+    private void showSupersetPicker() {
+        if (picked.size() < 2) {
+            toast(getString(R.string.superset_need_two));
+            return;
+        }
+
+        String[] names = new String[picked.size()];
+        boolean[] checked = new boolean[picked.size()];
+        for (int i = 0; i < picked.size(); i++) {
+            names[i] = picked.get(i).exercise.name;
+        }
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.superset_title)
+                .setMultiChoiceItems(names, checked, (dialog, which, isChecked) -> checked[which] = isChecked)
+                .setNegativeButton(R.string.cancel, null)
+                .setNeutralButton(R.string.superset_clear, (dialog, which) -> {
+                    for (PickedExercise item : picked) {
+                        item.groupName = null;
+                    }
+                    adapter.notifyDataSetChanged();
+                    toast(getString(R.string.superset_cleared));
+                })
+                .setPositiveButton(R.string.superset_group, (dialog, which) -> {
+                    int selected = 0;
+                    for (boolean value : checked) {
+                        if (value) selected++;
+                    }
+                    if (selected < 2) {
+                        toast(getString(R.string.superset_need_two));
+                        return;
+                    }
+                    askSupersetName(checked);
+                })
+                .show();
+    }
+
+    private void askSupersetName(boolean[] checked) {
+        EditText input = new EditText(this);
+        input.setText(getString(R.string.superset_default_name, countGroups() + 1));
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.superset_name)
+                .setView(input)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.save, (dialog, which) -> {
+                    String name = text(input.getText());
+                    if (name.isEmpty()) {
+                        name = getString(R.string.superset_default_name, countGroups() + 1);
+                    }
+                    for (int i = 0; i < picked.size(); i++) {
+                        if (checked[i]) {
+                            picked.get(i).groupName = name;
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                })
+                .show();
+    }
+
+    private int countGroups() {
+        List<String> seen = new ArrayList<>();
+        for (PickedExercise item : picked) {
+            if (item.groupName != null && !seen.contains(item.groupName)) {
+                seen.add(item.groupName);
+            }
+        }
+        return seen.size();
+    }
+
     @Override
     public void onRemove(int position) {
         picked.remove(position);
@@ -187,7 +277,10 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
         body.duration = parseInt(text(binding.durationInput.getText()));
         body.difficulty = emptyToNull(text(binding.difficultyInput.getText()));
         body.exercises = new ArrayList<>();
+        body.groups = new ArrayList<>();
 
+        // Exercícios soltos vão em "exercises"; os de superset, agrupados em "groups".
+        Map<String, GroupInput> groups = new LinkedHashMap<>();
         for (int i = 0; i < picked.size(); i++) {
             PickedExercise item = picked.get(i);
             ExerciseInput input = new ExerciseInput();
@@ -197,7 +290,22 @@ public class CreateWorkoutActivity extends AppCompatActivity implements PickedEx
             input.weight = item.weight;
             input.restTime = item.restTime;
             input.orderIndex = i;
-            body.exercises.add(input);
+
+            if (item.groupName == null || item.groupName.isEmpty()) {
+                body.exercises.add(input);
+                continue;
+            }
+
+            GroupInput group = groups.get(item.groupName);
+            if (group == null) {
+                group = new GroupInput();
+                group.name = item.groupName;
+                group.orderIndex = groups.size();
+                group.exercises = new ArrayList<>();
+                groups.put(item.groupName, group);
+                body.groups.add(group);
+            }
+            group.exercises.add(input);
         }
 
         binding.saveButton.setEnabled(false);

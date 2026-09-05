@@ -17,8 +17,18 @@ import java.util.Set;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHolder> {
 
+    /** Toque longo no exercício, usado pela gestão do catálogo (RF04). */
+    public interface Listener {
+        void onExerciseLongPress(Exercise exercise);
+    }
+
     private final List<Exercise> items = new ArrayList<>();
     private final Set<String> expanded = new HashSet<>();
+    private Listener listener;
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     public void submit(List<Exercise> exercises) {
         items.clear();
@@ -56,6 +66,11 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
 
         void bind(Exercise exercise) {
             binding.name.setText(exercise.name);
+            binding.getRoot().setOnLongClickListener(v -> {
+                if (listener == null) return false;
+                listener.onExerciseLongPress(exercise);
+                return true;
+            });
 
             StringBuilder meta = new StringBuilder();
             if (exercise.muscleGroup != null && !exercise.muscleGroup.isEmpty()) {

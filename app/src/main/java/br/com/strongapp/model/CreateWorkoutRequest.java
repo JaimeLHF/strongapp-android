@@ -8,4 +8,6 @@ public class CreateWorkoutRequest {
     public Integer duration;
     public String difficulty;
     public List<ExerciseInput> exercises;
+    /** Supersets. Exercícios soltos ficam em {@link #exercises}. */
+    public List<GroupInput> groups;
 }

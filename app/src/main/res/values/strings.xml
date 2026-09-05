@@ -76,6 +76,20 @@
     <string name="my_profile">Meu Perfil</string>
     <string name="edit_profile">Editar Perfil</string>
 
+    <string name="member_since">Membro desde %1$s</string>
+
+    <!-- Gestão do catálogo de exercícios -->
+    <string name="new_exercise">Novo exercício</string>
+    <string name="edit_exercise">Editar exercício</string>
+    <string name="exercise_name">Nome do exercício</string>
+    <string name="exercise_muscle_group">Grupo muscular</string>
+    <string name="exercise_equipment">Equipamento</string>
+    <string name="exercise_instructions">Instruções</string>
+    <string name="exercise_video">Link do vídeo</string>
+    <string name="exercise_name_required">Informe o nome do exercício.</string>
+    <string name="exercise_deleted">Exercício excluído.</string>
+    <string name="delete_exercise_confirm">Excluir este exercício do catálogo?</string>
+
     <!-- Evolução do progresso -->
     <string name="progress_evolution">Evolução do Progresso</string>
     <string name="period">Período</string>
@@ -102,6 +116,39 @@
     <string name="diary_notes">Anotações</string>
     <string name="diary_notes_required">Escreva alguma coisa antes de salvar.</string>
     <string name="empty_diary">Nenhuma anotação neste treino ainda. Toque em + para escrever a primeira.</string>
+
+    <!-- Lembrete de treino -->
+    <string name="reminder">Lembrete de treino</string>
+    <string name="reminder_days">Em quais dias você treina?</string>
+    <string name="reminder_time">Horário: %1$02d:%2$02d</string>
+    <string name="reminder_saved">Lembrete salvo: %1$s</string>
+    <string name="reminder_cleared">Lembrete desligado.</string>
+    <string name="reminder_notification_title">Hora de treinar</string>
+    <string name="reminder_notification_text">Seu treino \"%1$s\" está esperando por você.</string>
+    <string name="reminder_channel">Lembretes de treino</string>
+    <string name="reminder_permission_needed">Autorize as notificações para receber o lembrete.</string>
+    <string name="day_sunday">Domingo</string>
+    <string name="day_monday">Segunda-feira</string>
+    <string name="day_tuesday">Terça-feira</string>
+    <string name="day_wednesday">Quarta-feira</string>
+    <string name="day_thursday">Quinta-feira</string>
+    <string name="day_friday">Sexta-feira</string>
+    <string name="day_saturday">Sábado</string>
+
+    <!-- Supersets -->
+    <string name="superset_action">Agrupar em superset</string>
+    <string name="superset_title">Escolha os exercícios do superset</string>
+    <string name="superset_name">Nome do superset</string>
+    <string name="superset_group">Agrupar</string>
+    <string name="superset_clear">Desfazer supersets</string>
+    <string name="superset_need_two">Escolha ao menos dois exercícios.</string>
+    <string name="superset_cleared">Supersets desfeitos.</string>
+    <string name="superset_default_name">Superset %1$d</string>
+
+    <!-- Compartilhar progresso -->
+    <string name="share_progress">Compartilhar progresso</string>
+    <string name="share_progress_text">%1$d%% do treino \"%2$s\" concluído nesta semana. #RitmoForteGym</string>
+    <string name="share_progress_failed">Não foi possível gerar a imagem do progresso.</string>
 
     <!-- Compartilhar treino -->
     <string name="share_workout">Compartilhar treino</string>
